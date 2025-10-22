@@ -4,8 +4,8 @@ from datetime import datetime
 from datetime import date
 from typing import TYPE_CHECKING
 
-from pydantic import BaseModel, ConfigDict, Field
-from sqlalchemy import Boolean, Integer, Numeric, String, TIMESTAMP, func, Date
+from pydantic import BaseModel
+from sqlalchemy import Date, ForeignKey, Integer, String, TIMESTAMP, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db import Base
@@ -19,7 +19,8 @@ class Diary(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     title: Mapped[str] = mapped_column(String(50), unique=True, index=True)
     content_url: Mapped[str] = mapped_column(String(255), unique=True)
-    author: Mapped[User] = relationship(back_populates="articles")
+    author_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False, index=True)
+    author: Mapped["User"] = relationship(back_populates="articles")
     _date: Mapped[date] = mapped_column(Date, index=True)
     created_at: Mapped[datetime] = mapped_column(TIMESTAMP(timezone=True), server_default=func.now())
 

@@ -1,1 +1,25 @@
+# Environment / secrets
 .env
+env_base
+
+# Databases
+*.db
+*.sqlite
+
+# Python cache / build artifacts
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+
+# Tooling caches
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
+
+# Local storage artifacts
+storage/

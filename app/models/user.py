@@ -1,15 +1,15 @@
 from __future__ import annotations
 
 from datetime import datetime
-
-
+from typing import TYPE_CHECKING
 from pydantic import BaseModel, ConfigDict, Field
 from sqlalchemy import Boolean, Integer, Numeric, String, TIMESTAMP, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db import Base
 
-from .diary import Diary
+if TYPE_CHECKING:
+    from .diary import Diary
 
 class User(Base):
     __tablename__ = "users"
@@ -17,7 +17,7 @@ class User(Base):
     name: Mapped[str] = mapped_column(String(50), unique=True, index=True)
     login_id: Mapped[str] = mapped_column(String(32), nullable=False)
     password: Mapped[str] = mapped_column(String(255), nullable=False)
-    articles: Mapped[list[Diary]] = relationship(back_populates="author")
+    articles: Mapped[list["Diary"]] = relationship(back_populates="author")
     join_date: Mapped[datetime] = mapped_column(TIMESTAMP(timezone=True), server_default=func.now())
 
 class PasswordChange(BaseModel):
@@ -49,3 +49,5 @@ class TokenResponse(BaseModel):
 
 class TokenRefreshRequest(BaseModel):
     refresh_token: str
+
+import app.models.diary  # noqa: E402,F401

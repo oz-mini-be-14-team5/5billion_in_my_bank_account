@@ -1,49 +1,50 @@
-from typing import List
-from fastapi import APIRouter, Depends, HTTPException, status, UploadFile, File
-from sqlalchemy import or_
+from __future__ import annotations
+
+from uuid import uuid4
+
+from fastapi import APIRouter, Depends, File, HTTPException, UploadFile, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
-from passlib.context import CryptContext
-from environs import Env
 
-from app.auth import (
-    ACCESS_TOKEN_EXPIRE_MINUTES,
-    REFRESH_TOKEN_EXPIRE_MINUTES,
-    create_access_token,
-    create_refresh_token,
-    decode_token,
-    get_current_user,
-)
+from app.auth import get_current_user
 from app.db import get_db
-from app.models.user import (
-    PasswordChange,
-    UserCreate,
-    TokenResponse,
-    TokenRefreshRequest,
-    User,
-    UserLogin,
-    UserOut,
-)
-from app.models.diary import CreateDiary , Diary
-
-env = Env()
-env.read_env()
+from app.models.diary import CreateDiary, Diary
+from app.models.user import User
 
 route = APIRouter()
 
-@route.post("/", response_model=TokenResponse)
-async def post_diary(diary: CreateDiary,
-                     db: AsyncSession = Depends(get_db),
-                     current_user: User = Depends(get_current_user),
-                     contents_html: UploadFile = File(...)
-                     ):
-    result =  await db.execute(select(Diary).where(Diary._date == diary._date and Diary.author == current_user.id))
-    db_except = result.scalars().first()
-    if db_except:
-        raise HTTPException(400,detail="already a diary entry for that date")
-    else:
-        # contents_html 이름 재작성 , storage에 보관
-        new_diary = Diary(**diary.model_dump(),
-                          author=current_user.id
-                          )
-        # new_diary.content_url 에 저장된 위치 기록
+
+@route.post("/", status_code=status.HTTP_201_CREATED)
+async def post_diary(
+    diary: CreateDiary,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+    contents_html: UploadFile = File(...),
+):
+    existing_diary = await db.execute(
+        select(Diary).where(
+            Diary._date == diary._date,
+            Diary.author_id == current_user.id
+        )
+    )
+    if existing_diary.scalars().first():
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="already a diary entry for that date",
+        )
+
+    storage_key = f"{uuid4()}_{contents_html.filename}"
+
+    new_diary = Diary(
+        **diary.model_dump(),
+        author=current_user,
+        content_url=storage_key,
+    )
+    db.add(new_diary)
+    await db.commit()
+    await db.refresh(new_diary)
+    return {
+        "detail": "Diary created",
+        "diary_id": new_diary.id,
+        "content_url": new_diary.content_url,
+    }

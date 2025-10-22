@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import List, Optional
 
 from environs import Env
@@ -17,7 +17,7 @@ from app.models.user import User
 env = Env()
 env.read_env()
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/users/login")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/users/auth/login")
 SECRET_KEY = env.str("JWT_SECRET_KEY")
 JWT_ALGORITHM = env.str("JWT_ALGORITHM")
 ACCESS_TOKEN_EXPIRE_MINUTES = env.int("ACCESS_TOKEN_EXPIRE_MINUTES", default=120)
@@ -33,12 +33,15 @@ class _TokenConfig(BaseModel):
     user_id: int
     scopes: List[str]
 
-def _create_token(*,user_id: int, scopes: Optional[List[str]] = None, minutes: int, token_type: str) -> str:
+def _create_token(
+    *, user_id: int, scopes: Optional[List[str]] = None, minutes: int, token_type: str
+) -> str:
+    expires_at = datetime.now(timezone.utc) + timedelta(minutes=minutes)
     to_encode = {
         "sub": str(user_id),
         "type": token_type,
         "scopes": scopes or [],
-        "exp": datetime.now() + timedelta(minutes=minutes),
+        "exp": int(expires_at.timestamp()),
     }
     return jwt.encode(to_encode, SECRET_KEY, algorithm=JWT_ALGORITHM)
 
