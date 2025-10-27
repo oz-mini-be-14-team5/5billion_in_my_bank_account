@@ -6,8 +6,9 @@ from src.model.schema.token import (
     TokenResponse,
 )
 import config
-from src.model.schema.user import UserCreate, UserLogin, UserResponse
+from src.model.schema.user import UserCreate, UserResponse
 from src.model.users import User
+from fastapi.security import OAuth2PasswordRequestForm
 from src.tools.jwt import get_current_user, create_access_token, create_refresh_token, decode_token
 router = APIRouter(
     prefix="/api/v1/users",
@@ -16,13 +17,13 @@ router = APIRouter(
 )
 
 @router.post("/login", response_model=TokenResponse)
-async def login(user_login: UserLogin):
+async def login(form_data: OAuth2PasswordRequestForm = Depends()):
     try:
-        user: User = await User.get(login_id=user_login.login_id)
+        user: User = await User.get(login_id=form_data.username)
     except DoesNotExist:
         raise HTTPException(status_code=400, detail="Invalid login ID or password")
 
-    if not user.verify_password(user_login.password):
+    if not user.verify_password(form_data.password):
         raise HTTPException(status_code=400, detail="Invalid login ID or password")
 
     access_token = create_access_token(user.id)

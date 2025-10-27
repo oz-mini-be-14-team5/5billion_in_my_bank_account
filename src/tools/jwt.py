@@ -14,7 +14,7 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/users/login")
 
 class _TokenPayload(BaseModel):
     sub: str
-    type: str
+    token_type: str
     scopes: List[str] = []
     exp: int
 
@@ -48,29 +48,29 @@ def create_refresh_token(id:int, scopes: Optional[List[str]] = None) -> str:
     )
 
 def decode_token(token: str, expected_type: str) -> _TokenConfig:
-    payload: _TokenPayload
+    payload: dict
     try:
-        payload =  jwt.decode(token, config.jwt_secret_key, algorithms=[config.jwt_algorithm])
+        payload = jwt.decode(token, config.jwt_secret_key, algorithms=[config.jwt_algorithm])
     except JWTError:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Could not validate credentials",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    if payload.type != expected_type:
+    if payload.get("type","null") != expected_type:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid token type",
         )
     try:
-        user_id = int(payload.sub)
+        user_id = int(payload.get("sub","null"))
     except ValueError:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Could not validate credentials",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    return _TokenConfig(id=user_id, scopes=payload.scopes)
+    return _TokenConfig(id=user_id, scopes=payload.get("scopes", []))
 
 async def get_current_user(token: str = Depends(oauth2_scheme)) -> User:
     token_config = decode_token(token, expected_type="access")
