@@ -21,11 +21,10 @@ async def create_post(post_data: PostCreate, user: User = Depends(get_current_us
 
 @router.get("/", response_model=List[PostOut])
 async def get_my_posts(page: int = 1, limit: int = 10, user: User = Depends(get_current_user)):
-    
+
    
     posts = await Post.filter(author=user).offset((page - 1) * limit).limit(limit).order_by("-created_at")
     return [await PostOut.from_tortoise_orm(p) for p in posts]
-
 
 @router.get("/{post_id}", response_model=PostOut)
 async def get_my_post(post_id: int, user: User = Depends(get_current_user)):
