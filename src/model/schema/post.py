@@ -18,3 +18,4 @@ class PostOut(BaseModel):
     date : datetime.date
     contents : str
     created_at : datetime.datetime
+    
