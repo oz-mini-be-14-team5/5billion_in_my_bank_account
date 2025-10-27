@@ -7,9 +7,10 @@ from config import database_url, debug_mode, host, port
 from src.router.static import router as static_router
 from src.router.users import router as user_router
 from src.router.quotes import router as quotes_router
+from src.router.questions import router as questions_router
 
-MODELS = ["src.model.users", "src.model.posts", "src.model.quotes", "src.model.bookmarks"]
-ROUTERS = [user_router, quotes_router, static_router]
+MODELS = ["src.model.users", "src.model.posts", "src.model.quotes", "src.model.questions", "src.model.bookmarks"]
+ROUTERS = [user_router, quotes_router, questions_router, static_router]
 
 # 앱 수명 주기 설정
 async def lifespan(app: FastAPI):
