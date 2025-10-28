@@ -7,6 +7,7 @@ from src.model.quotes import Quote
 from src.model.bookmarks import Bookmark
 from src.model.schema.quotes import QuoteResponse
 from src.tools.jwt import get_current_user
+
 router = APIRouter(
     prefix="/api/v1/quotes",
     tags=["quote"],

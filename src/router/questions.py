@@ -1,8 +1,8 @@
-from fastapi import APIRouter, HTTPException, Depends
-from tortoise.exceptions import DoesNotExist
+from fastapi import APIRouter
+import random
 
-from src.model.users import User
 from src.model.questions import Question
+from src.model.schema.questions import QuestionResponse
 
 router = APIRouter(
     prefix="/api/v1/questions",
@@ -10,8 +10,13 @@ router = APIRouter(
     responses={404: {"description": "Not found"}},
 )
 
-@router.get("/")
+@router.get("/", response_model=QuestionResponse)
 async def get_random_question():
-    question_count = await Question.all().count()
-    # 랜덤 질문 반환 api 구현
-    return
+    total = await Question.all().count()
+    if total == 0:
+        return None
+
+    idx = random.randrange(total)
+
+    result = await Question.all().offset(idx).limit(1)
+    return result[0]
