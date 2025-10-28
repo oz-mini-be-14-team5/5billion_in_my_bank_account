@@ -1,17 +1,142 @@
 <!DOCTYPE html>
-<html lang="kr">
-
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>갬성 다이어리 S</title>
+    <title>보유자산 5억 API 데모</title>
+    <link rel="stylesheet" href="/ast/css/main.css">
 </head>
 <body>
-    <p>이곳은 여러분의 일상을 기록하고, 영감을 주는 명언을 받아보는 공간입니다.</p>
-    <h1 class="quote"></h1>
-    <h2 class="question"></h2>
-    <img src="/ast/img/oia.png" alt="Example Image">
-    <button id="new-quote-button">새로고침</button>
+<main class="layout">
+    <header class="page-header">
+        <h1>보유자산 5억 API 데모</h1>
+        <p>로그인부터 글 작성, 명언과 질문까지 모든 엔드포인트를 한 화면에서 확인할 수 있는 간단한 예제입니다.</p>
+    </header>
+
+    <section class="card" id="auth-section">
+        <h2>사용자 &amp; 토큰</h2>
+        <div class="card-grid">
+            <form id="register-form" class="card-form">
+                <h3>회원가입</h3>
+                <label>닉네임
+                    <input type="text" name="username" required>
+                </label>
+                <label>로그인 ID
+                    <input type="text" name="login_id" required>
+                </label>
+                <label>비밀번호
+                    <input type="password" name="password" required>
+                </label>
+                <button type="submit">회원가입</button>
+            </form>
+            <form id="login-form" class="card-form">
+                <h3>로그인</h3>
+                <label>로그인 ID
+                    <input type="text" name="login_id" required>
+                </label>
+                <label>비밀번호
+                    <input type="password" name="password" required>
+                </label>
+                <button type="submit">로그인</button>
+            </form>
+        </div>
+        <div class="card-actions">
+            <button type="button" id="btn-me">내 정보 조회</button>
+            <button type="button" id="btn-refresh">토큰 재발급</button>
+            <button type="button" id="btn-calendar">작성 날짜 확인</button>
+        </div>
+        <div class="token-display">
+            <p>Access Token: <span id="access-token-display">없음</span></p>
+            <p>Refresh Token: <span id="refresh-token-display">없음</span></p>
+        </div>
+        <pre id="auth-log" class="log"></pre>
+    </section>
+
+    <section class="card" id="posts-section">
+        <h2>게시글</h2>
+        <form id="create-post-form" class="card-form">
+            <h3>새 글 작성</h3>
+            <label>제목
+                <input type="text" name="title" required>
+            </label>
+            <label>작성 날짜
+                <input type="date" name="date" required>
+            </label>
+            <label>내용
+                <textarea name="content" rows="4" required></textarea>
+            </label>
+            <label>이미지 파일 (선택)
+                <input type="file" name="image" accept="image/*">
+            </label>
+            <button type="submit">작성</button>
+        </form>
+
+        <form id="update-post-form" class="card-form">
+            <h3>글 수정</h3>
+            <label>게시글 ID
+                <input type="number" name="post_id" min="1" required>
+            </label>
+            <label>제목 (선택)
+                <input type="text" name="title">
+            </label>
+            <label>내용 (선택)
+                <textarea name="content" rows="3"></textarea>
+            </label>
+            <label>새 이미지 (선택)
+                <input type="file" name="image" accept="image/*">
+            </label>
+            <button type="submit">수정</button>
+        </form>
+
+        <form id="delete-post-form" class="card-form card-form--inline">
+            <label>삭제할 게시글 ID
+                <input type="number" name="post_id" min="1" required>
+            </label>
+            <button type="submit">삭제</button>
+        </form>
+
+        <div class="card-actions">
+            <button type="button" id="btn-load-posts">내 글 새로고침</button>
+        </div>
+
+        <form id="week-post-form" class="card-form card-form--inline">
+            <label>주간 조회 기준일
+                <input type="date" name="target_date" required>
+            </label>
+            <button type="submit">해당 주 글 보기</button>
+        </form>
+
+        <form id="detail-post-form" class="card-form card-form--inline">
+            <label>상세 조회 ID
+                <input type="number" name="post_id" min="1" required>
+            </label>
+            <button type="submit">상세 보기</button>
+        </form>
+
+        <ul id="posts-list" class="list"></ul>
+        <pre id="posts-log" class="log"></pre>
+    </section>
+
+    <section class="card" id="quotes-section">
+        <h2>명언 &amp; 질문</h2>
+        <div class="quote-box">
+            <p id="quote-message">버튼을 눌러 명언을 불러오세요.</p>
+            <p id="quote-author" class="muted"></p>
+        </div>
+        <div class="card-actions">
+            <button type="button" id="btn-load-quote">명언 새로고침</button>
+            <button type="button" id="btn-bookmark-quote">이 명언 북마크</button>
+            <button type="button" id="btn-load-bookmarks">북마크 목록</button>
+        </div>
+        <ul id="bookmarks-list" class="list list--compact"></ul>
+        <pre id="quotes-log" class="log"></pre>
+
+        <div class="question-box">
+            <p id="question-text">랜덤 질문을 가져와 보세요.</p>
+            <button type="button" id="btn-load-question">질문 새로고침</button>
+        </div>
+    </section>
+</main>
+<script src="/ast/js/main.js" defer></script>
 </body>
 </html>
-
