@@ -2,7 +2,7 @@ from fastapi import APIRouter
 import random
 
 from src.model.questions import Question
-from src.model.schema.questions import QuestionResponse
+from src.model.schema.question import QuestionResponse
 
 router = APIRouter(
     prefix="/api/v1/questions",

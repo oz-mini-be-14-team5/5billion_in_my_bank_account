@@ -17,3 +17,6 @@ __pycache__/
 *.sqlite3-shm
 *.sqlite3-wal
 *.db
+
+# 업로드 이미지 파일
+storage/posts

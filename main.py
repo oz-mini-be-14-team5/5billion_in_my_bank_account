@@ -3,9 +3,7 @@ from tortoise import Tortoise
 
 from fastapi import FastAPI
 
-from config import create_env
-from config import database_url, debug_mode, host, port
-
+from config import database_url, host, port, debug_mode
 from src.router.static import router as static_router
 from src.router.users import router as user_router
 from src.router.quotes import router as quotes_router
@@ -40,5 +38,4 @@ async def health_check():
     return {"status": "ok"}
 
 if __name__ == "__main__":
-    create_env()
     uvicorn.run("main:app", host=host, port=port, reload=debug_mode)
