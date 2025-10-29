@@ -52,13 +52,20 @@
   /ast/ 라우팅으로 static/asset 안의 폴더를 탐색하여 반환.  
   기능은 구현하였지만 api 위주의 단일페이지로 구성하게 되었음.  
 
+
+
+## 프론트
+
+열심히 목업이미지 만들었는데 그냥 시간부족으로 gpt 돌렸음
+
+아래는 열심히 만든 목업이미지
+
 ### 로그인 화면
 ![img2](/design/not_authed_page.png)
 
 ### 앱 화면
 ![img1](/design/authed_page.png)
 
-실제 구현
 
 
 
