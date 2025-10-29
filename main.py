@@ -3,14 +3,16 @@ from tortoise import Tortoise
 
 from fastapi import FastAPI
 
-from config import database_url, debug_mode, host, port
+from config import database_url, host, port, debug_mode
 from src.router.static import router as static_router
 from src.router.users import router as user_router
 from src.router.quotes import router as quotes_router
 from src.router.questions import router as questions_router
+from src.router.posts import router as posts_router
 
 MODELS = ["src.model.users", "src.model.posts", "src.model.quotes", "src.model.questions", "src.model.bookmarks"]
-ROUTERS = [user_router, quotes_router, questions_router, static_router]
+ROUTERS = [user_router, quotes_router, questions_router, posts_router]
+STATIC_ROUTER = static_router
 
 # 앱 수명 주기 설정
 async def lifespan(app: FastAPI):
@@ -27,6 +29,8 @@ app = FastAPI(lifespan=lifespan)
 # 라우터 등록
 for router in ROUTERS:
     app.include_router(router)
+app.include_router(STATIC_ROUTER)
+
 
 # 헬스체크 엔드포인트
 @app.route("/health")

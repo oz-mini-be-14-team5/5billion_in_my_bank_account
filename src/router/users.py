@@ -1,4 +1,6 @@
 from fastapi import APIRouter, HTTPException, Depends
+from datetime import date
+from typing import List, Dict
 from tortoise.exceptions import DoesNotExist
 
 from src.model.schema.token import (
@@ -8,6 +10,7 @@ from src.model.schema.token import (
 import config
 from src.model.schema.user import UserCreate, UserResponse
 from src.model.users import User
+from src.model.posts import Post
 from fastapi.security import OAuth2PasswordRequestForm
 from src.tools.jwt import get_current_user, create_access_token, create_refresh_token, decode_token
 router = APIRouter(
@@ -68,3 +71,12 @@ async def create_user(user_create: UserCreate):
         username=user.username,
         number_of_posts=user.number_of_posts,
     )
+
+@router.get("/calender", response_model=List[Dict[str, date]])
+async def get_calender(user: User = Depends(get_current_user)):
+    post_dates = (
+        await Post.filter(author=user)
+        .distinct()
+        .values_list("date", flat=True)
+    )
+    return [{"date": post_date} for post_date in post_dates]

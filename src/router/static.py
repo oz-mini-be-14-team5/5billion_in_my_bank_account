@@ -5,7 +5,7 @@ from fastapi.responses import FileResponse
 
 STATIC_ROOT = Path(__file__).resolve().parent.parent / "static"
 STATIC_HTML_DIR = STATIC_ROOT / "html"
-STATIC_DIR = STATIC_ROOT / "ast"
+STATIC_DIR = STATIC_ROOT / "asset"
 STATIC_RESPONSE_DIR = STATIC_ROOT / "response"
 INDEX_FILE = STATIC_HTML_DIR / "index.html"
 NOT_FOUND_FILE = STATIC_RESPONSE_DIR / "404.html"
