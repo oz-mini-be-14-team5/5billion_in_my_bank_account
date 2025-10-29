@@ -8,6 +8,7 @@ let refreshToken = null;
 let currentPostId = null;
 let currentDate = new Date();
 let markDates = [];
+let markDateMap = {}; // key: yyyy-mm-dd, value: array of post ids
 let selectedDate = null;
 let selectedWeekStart = null;
 let selectedWeekEnd = null;
@@ -511,9 +512,7 @@ async function deleteBookmark(quoteId) {
         });
 
         if (response.ok) {
-            // 기존 모드 갱신
-            showBookmarks();
-            // 사이드바 갱신
+            // 사이드바만 갱신, 북마크 모드 전환하지 않음
             loadBookmarksData();
         }
     } catch (error) {
@@ -532,7 +531,13 @@ async function loadCalendar() {
 
         if (response.ok) {
             const data = await response.json();
-            markDates = data.map(item => new Date(item.date));
+            markDateMap = {};
+            markDates = data.map(item => {
+                const d = new Date(item.date);
+                const key = formatDate(d);
+                markDateMap[key] = item.post_ids || [];
+                return d;
+            });
             renderCalendar();
             updateCalendarButton(false);
         }
@@ -548,6 +553,14 @@ function renderCalendar() {
     
     document.getElementById('current-month-display').textContent = 
         `${year}년 ${month + 1}월`;
+
+    // Show/Hide next-month button so users cannot navigate beyond the current month
+    const nextBtn = document.getElementById('next-month-btn');
+    const todayForNav = new Date();
+    const isViewingCurrentOrFutureMonth = (year > todayForNav.getFullYear()) || (year === todayForNav.getFullYear() && month >= todayForNav.getMonth());
+    if (nextBtn) {
+        nextBtn.style.visibility = isViewingCurrentOrFutureMonth ? 'hidden' : 'visible';
+    }
 
     const firstDay = new Date(year, month, 1);
     const lastDay = new Date(year, month + 1, 0);
@@ -568,9 +581,18 @@ function renderCalendar() {
     todayStart.setHours(0,0,0,0);
     
     const container = document.getElementById('calendar-grid');
+    
+    // 기존 주 하이라이트 제거
+    const existingHighlight = container.querySelector('.calendar-week-highlight');
+    if (existingHighlight) existingHighlight.remove();
+    
     container.innerHTML = '';
     
     const currentDateIter = new Date(startDate);
+    
+    let weekCells = [];
+    let weekStartCell = null;
+    let weekEndCell = null;
     
     while (currentDateIter <= endDate) {
         const day = currentDateIter.getDate();
@@ -581,16 +603,17 @@ function renderCalendar() {
         dateToCheck.setHours(0,0,0,0);
         const isFuture = dateToCheck.getTime() > todayStart.getTime();
         
-        const hasEntry = markDates.some(markDate => 
-            markDate.toDateString() === currentDateIter.toDateString()
-        );
+        const hasEntry = (markDateMap[formatDate(currentDateIter)] || []).length > 0;
         const isToday = currentDateIter.toDateString() === today.toDateString();
         
         const dayElement = document.createElement('div');
         dayElement.className = 'calendar-day';
-        if (isOtherMonth || isFuture) dayElement.classList.add('other-month');
+        if (isOtherMonth) dayElement.classList.add('other-month');
         if (hasEntry) dayElement.classList.add('has-entry');
         if (isToday) dayElement.classList.add('today');
+        
+        // 주 하이라이트 범위 내 날짜 추적
+        let isInSelectedWeek = false;
         if (selectedWeekStart && selectedWeekEnd) {
             const iterDateOnly = new Date(currentDateIter.getTime());
             iterDateOnly.setHours(0,0,0,0);
@@ -599,36 +622,73 @@ function renderCalendar() {
             const weekEndOnly = new Date(selectedWeekEnd.getTime());
             weekEndOnly.setHours(0,0,0,0);
             
-            // 주 범위 체크: 시작일 <= 현재날짜 <= 종료일
             if (iterDateOnly.getTime() >= weekStartOnly.getTime() && 
                 iterDateOnly.getTime() <= weekEndOnly.getTime()) {
-                dayElement.classList.add('in-selected-week');
+                isInSelectedWeek = true;
+                if (!weekStartCell) weekStartCell = dayElement;
+                weekEndCell = dayElement;
             }
         }
-        if (selectedDate && currentDateIter.toDateString() === selectedDate.toDateString()) {
+        
+        if (!isFuture && selectedDate && currentDateIter.toDateString() === selectedDate.toDateString()) {
             dayElement.classList.add('selected-date');
         }
         
-        dayElement.innerHTML = `
-            <div class="day-number">${day}</div>
-            ${hasEntry ? '<div class="day-indicator"></div>' : ''}
-        `;
-        
-        const dateForClick = new Date(currentDateIter);
-        dayElement.onclick = () => {
-            if (!isOtherMonth && !isFuture) {
-                selectDate(dateForClick);
-            }
-        };
+        if (!isFuture) {
+            dayElement.innerHTML = `
+                <div class="day-number">${day}</div>
+                ${hasEntry ? '<div class="day-indicator"></div>' : ''}
+            `;
+            const dateForClick = new Date(currentDateIter);
+            dayElement.onclick = () => {
+                if (!isFuture) {
+                    if (isOtherMonth) {
+                        currentDate = new Date(dateForClick.getFullYear(), dateForClick.getMonth(), 1);
+                        renderCalendar();
+                    }
+                    selectDate(dateForClick);
+                }
+            };
+        } else {
+            // 미래 날짜는 버튼을 만들지 않음 (빈 셀)
+            dayElement.innerHTML = '';
+            dayElement.style.pointerEvents = 'none';
+        }
         
         container.appendChild(dayElement);
         currentDateIter.setDate(currentDateIter.getDate() + 1);
+    }
+    
+    // 주 하이라이트 박스 위치 및 크기 설정
+    if (weekStartCell && weekEndCell) {
+        const highlightBox = document.createElement('div');
+        highlightBox.className = 'calendar-week-highlight';
+        
+        const startRect = weekStartCell.getBoundingClientRect();
+        const endRect = weekEndCell.getBoundingClientRect();
+        const containerRect = container.getBoundingClientRect();
+        
+        highlightBox.style.left = `${startRect.left - containerRect.left - 2}px`;
+        highlightBox.style.top = `${startRect.top - containerRect.top - 2}px`;
+        highlightBox.style.width = `${endRect.right - startRect.left + 4}px`;
+        highlightBox.style.height = `${endRect.height + 4}px`;
+        
+        container.appendChild(highlightBox);
     }
 }
 
 // 월 변경
 function changeMonth(delta) {
-    currentDate.setMonth(currentDate.getMonth() + delta);
+    // Clamp so we cannot navigate beyond the current month
+    const tentative = new Date(currentDate);
+    tentative.setMonth(tentative.getMonth() + delta);
+    const today = new Date();
+    const isFutureMonth = (tentative.getFullYear() > today.getFullYear()) || (tentative.getFullYear() === today.getFullYear() && tentative.getMonth() > today.getMonth());
+    if (isFutureMonth) {
+        // Do nothing if trying to go to a future month
+        return;
+    }
+    currentDate = tentative;
     renderCalendar();
 }
 
@@ -650,9 +710,7 @@ async function selectDate(date) {
     selectedWeekEnd.setHours(0,0,0,0);
     
     // 선택한 날짜에 일기가 있는지 확인
-    const hasEntry = markDates.some(markDate => 
-        markDate.toDateString() === selectedDate.toDateString()
-    );
+    const hasEntry = (markDateMap[formatDate(selectedDate)] || []).length > 0;
     updateCalendarButton(hasEntry);
     
     renderCalendar();
@@ -678,20 +736,16 @@ function updateCalendarButton(hasEntry) {
 // 날짜로 일기 보기
 async function viewDiaryByDate(date) {
     try {
-        const targetDate = date.toISOString().split('T')[0];
-        const response = await fetch(`${API_BASE}/posts/by-week?target_date=${targetDate}`, {
-            headers: {
-                'Authorization': `Bearer ${accessToken}`,
-            }
+        const key = formatDate(date);
+        const ids = markDateMap[key] || [];
+        if (ids.length === 0) return;
+        const postId = ids[0];
+        const response = await fetch(`${API_BASE}/posts/${postId}`, {
+            headers: { 'Authorization': `Bearer ${accessToken}` }
         });
-
-        if (response.ok) {
-            const posts = await response.json();
-            const postForDate = posts.find(p => p.date === targetDate);
-            if (postForDate) {
-                loadDiaryForView(postForDate);
-            }
-        }
+        if (!response.ok) return;
+        const post = await response.json();
+        loadDiaryForView(post);
     } catch (error) {
         console.error('일기 로드 실패:', error);
     }

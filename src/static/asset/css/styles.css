@@ -341,12 +341,14 @@ header h1 {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
     gap: 4px;
-    overflow: hidden;
+    overflow: visible;
     max-width: 100%;
+    position: relative;
+    padding: 4px;
 }
 
 .calendar-day {
-    aspect-ratio: 1;
+    aspect-ratio: 0.85;
     border: 2px solid #e5e5e5;
     border-radius: 6px;
     display: flex;
@@ -357,7 +359,7 @@ header h1 {
     transition: all 0.3s;
     font-size: 11px;
     padding: 2px;
-    overflow: hidden;
+    overflow: visible;
     position: relative;
     min-width: 0;
 }
@@ -383,12 +385,17 @@ header h1 {
 }
 
 /* 선택된 주 하이라이트 */
-.calendar-day.in-selected-week {
-    background-color: #ececec;
+.calendar-week-highlight {
+    position: absolute;
+    background-color: rgba(58, 58, 58, 0.08);
+    border-radius: 8px;
+    pointer-events: none;
+    z-index: 0;
 }
 
 .calendar-day.selected-date {
-    outline: 2px solid #3a3a3a;
+    outline: 2px solid #ff6b6b;
+    outline-offset: -2px;
 }
 
 .day-number {
@@ -401,6 +408,7 @@ header h1 {
     background-color: white;
     border-radius: 50%;
     margin-top: 2px;
+    flex-shrink: 0;
 }
 
 /* 일기 작성 모드 */

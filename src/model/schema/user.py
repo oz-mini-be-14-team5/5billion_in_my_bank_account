@@ -1,5 +1,7 @@
 from pydantic import BaseModel
 from pydantic import Field
+from datetime import date
+from typing import List
 
 class UserCreate(BaseModel):
     username: str
@@ -20,3 +22,8 @@ class UserUpdateUsername(BaseModel):
 
 class UserDelete(BaseModel):
     password: str
+
+
+class CalendarEntry(BaseModel):
+    date: date
+    post_ids: List[int]
