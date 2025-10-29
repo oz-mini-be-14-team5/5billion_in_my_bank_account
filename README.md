@@ -2,6 +2,27 @@
 
 ### http://deardiary.p-e.kr/
 
+## 파트 분배
+
+- [김재진 (팀장)](https://github.com/dddops)  
+  명언 , 질문 스크래핑  
+  aws / ec2 배포  
+  qoutes , questions 라우팅  
+
+- [김준호](https://github.com/urumuru)  
+  posts 라우팅  
+  api spec 작성  
+  발표자료 제작  
+
+- [이건우](https://github.com/4vpr)  
+  기본적인 폴더구조 설계  
+  프로젝트 스켈레톤  
+  jwt 인증  
+  orm 모델 작성  
+  users , image , 정적 라우팅
+  페이지 목업 이미지  
+  남는시간띵가띵가놀기
+
 ## 기본적인 폴더구조
 
 ### 루트폴더
@@ -65,6 +86,7 @@
 
 ### 앱 화면
 ![img1](/design/authed_page.png)
+
 
 
 
