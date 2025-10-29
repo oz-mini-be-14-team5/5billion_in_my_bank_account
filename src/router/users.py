@@ -51,7 +51,7 @@ async def refresh_tokens(request: TokenRefreshRequest):
     )
 
 @router.post("/me", response_model=UserResponse)
-async def get_current_user(user: User = Depends(get_current_user)):
+async def get_user(user: User = Depends(get_current_user)):
     return UserResponse(
         id=user.id,
         username=user.username,

@@ -1,0 +1,710 @@
+@import url('https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700;800&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Nanum Myeongjo', serif;
+    background-color: #f5f3f0;
+    color: #2c2c2c;
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* 로그인 페이지 스타일 */
+#not-authed {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+header h1 {
+    font-size: 48px;
+    margin-bottom: 40px;
+    color: #3a3a3a;
+    font-weight: 800;
+    text-align: center;
+}
+
+.quote-banner {
+    max-width: 900px;
+    margin: 0 auto 24px auto;
+    text-align: center;
+    padding: 24px 16px;
+    cursor: pointer;
+    position: relative;
+}
+
+.quote-banner .quote-text {
+    font-size: 28px;
+    font-weight: 800;
+    color: #2c2c2c;
+}
+
+.quote-banner .quote-author {
+    margin-top: 8px;
+    font-size: 16px;
+    color: #666;
+}
+
+.quote-bookmark-btn {
+    position: absolute;
+    right: 8px;
+    top: 8px;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 1px solid #ddd;
+    background: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    font-size: 16px;
+    color: #e25555; /* heart color */
+}
+
+.quote-bookmark-btn:hover {
+    background-color: #f5f5f5;
+}
+
+.not-authed-main {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 20px 0;
+}
+
+.auth-section {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.auth-container {
+    background: white;
+    border-radius: 12px;
+    padding: 40px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    position: static;
+    width: 100%;
+    max-width: 420px;
+}
+
+.auth-tabs {
+    display: flex;
+    margin-bottom: 30px;
+    border-bottom: 2px solid #e5e5e5;
+}
+
+.tab-btn {
+    flex: 1;
+    padding: 12px 0;
+    border: none;
+    background: none;
+    font-family: 'Nanum Myeongjo', serif;
+    font-size: 16px;
+    cursor: pointer;
+    color: #888;
+    border-bottom: 3px solid transparent;
+    transition: all 0.3s;
+}
+
+.tab-btn.active {
+    color: #3a3a3a;
+    font-weight: 700;
+    border-bottom-color: #3a3a3a;
+}
+
+.auth-form {
+    display: none;
+}
+
+.auth-form.active {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.auth-form input {
+    padding: 14px 16px;
+    border: 2px solid #e5e5e5;
+    border-radius: 8px;
+    font-family: 'Nanum Myeongjo', serif;
+    font-size: 15px;
+    transition: border-color 0.3s;
+}
+
+.auth-form input:focus {
+    outline: none;
+    border-color: #6b6b6b;
+}
+
+.primary-btn {
+    padding: 14px;
+    background-color: #3a3a3a;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-family: 'Nanum Myeongjo', serif;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.primary-btn:hover {
+    background-color: #2a2a2a;
+}
+
+.secondary-btn {
+    padding: 10px 20px;
+    background-color: white;
+    color: #3a3a3a;
+    border: 2px solid #3a3a3a;
+    border-radius: 8px;
+    font-family: 'Nanum Myeongjo', serif;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.secondary-btn:hover {
+    background-color: #3a3a3a;
+    color: white;
+}
+
+.danger-btn {
+    padding: 10px 20px;
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-family: 'Nanum Myeongjo', serif;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.danger-btn:hover {
+    background-color: #c82333;
+}
+
+.icon-btn {
+    width: 36px;
+    height: 36px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: background-color 0.3s;
+}
+
+.icon-btn:hover {
+    background-color: #f0f0f0;
+}
+
+.error-message {
+    color: #dc3545;
+    font-size: 14px;
+    margin-top: 10px;
+    min-height: 20px;
+}
+
+/* 메인 페이지 스타일 */
+.main-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 40px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid #e5e5e5;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+#username-display {
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.main-content {
+    display: flex;
+    gap: 40px;
+}
+
+/* 사이드바 스타일 */
+.sidebar {
+    width: 300px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.sidebar section {
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.sidebar h2 {
+    font-size: 20px;
+    margin-bottom: 20px;
+    color: #3a3a3a;
+    font-weight: 700;
+    border-bottom: 3px solid #e5e5e5;
+    padding-bottom: 10px;
+}
+
+.quote-card, .question-card {
+    background: #fafafa;
+    padding: 25px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    border-left: 4px solid #3a3a3a;
+}
+
+.quote-card p, .question-card p {
+    font-size: 16px;
+    line-height: 1.8;
+    margin-bottom: 15px;
+    color: #2c2c2c;
+}
+
+#quote-author {
+    display: block;
+    text-align: right;
+    font-size: 14px;
+    color: #666;
+    font-style: italic;
+    margin-top: 15px;
+}
+
+.quote-card .icon-btn, .question-card .icon-btn {
+    margin-top: 10px;
+}
+
+/* 일기 섹션 스타일 */
+.diary-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.calendar-section {
+    background: white;
+    padding: 18px;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.calendar-header h2 {
+    font-size: 16px;
+    color: #3a3a3a;
+}
+
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+    overflow: hidden;
+    max-width: 100%;
+}
+
+.calendar-day {
+    aspect-ratio: 1;
+    border: 2px solid #e5e5e5;
+    border-radius: 6px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-size: 11px;
+    padding: 2px;
+    overflow: hidden;
+    position: relative;
+    min-width: 0;
+}
+
+.calendar-day:hover {
+    border-color: #3a3a3a;
+    background-color: #f9f9f9;
+}
+
+.calendar-day.has-entry {
+    background-color: #3a3a3a;
+    color: white;
+    border-color: #3a3a3a;
+}
+
+.calendar-day.other-month {
+    color: #ccc;
+}
+
+.calendar-day.today {
+    border-color: #6b6b6b;
+    border-width: 3px;
+}
+
+/* 선택된 주 하이라이트 */
+.calendar-day.in-selected-week {
+    background-color: #ececec;
+}
+
+.calendar-day.selected-date {
+    outline: 2px solid #3a3a3a;
+}
+
+.day-number {
+    font-weight: 700;
+}
+
+.day-indicator {
+    width: 6px;
+    height: 6px;
+    background-color: white;
+    border-radius: 50%;
+    margin-top: 2px;
+}
+
+/* 일기 작성 모드 */
+.diary-edit {
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.diary-edit h2 {
+    font-size: 24px;
+    margin-bottom: 25px;
+    color: #3a3a3a;
+}
+
+.diary-edit input[type="date"],
+.diary-edit input[type="text"],
+.diary-edit textarea {
+    width: 100%;
+    padding: 14px;
+    border: 2px solid #e5e5e5;
+    border-radius: 8px;
+    font-family: 'Nanum Myeongjo', serif;
+    font-size: 15px;
+    margin-bottom: 15px;
+    transition: border-color 0.3s;
+}
+
+.diary-edit input[type="date"] {
+    max-width: 200px;
+}
+
+.diary-edit textarea {
+    min-height: 250px;
+    resize: vertical;
+}
+
+.diary-edit input:focus,
+.diary-edit textarea:focus {
+    outline: none;
+    border-color: #6b6b6b;
+}
+
+.image-upload-section {
+    margin-bottom: 20px;
+}
+
+.image-upload-section input[type="file"] {
+    margin-bottom: 15px;
+    padding: 10px;
+}
+
+#image-preview {
+    max-width: 100%;
+    margin-top: 15px;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+#image-preview img {
+    max-width: 100%;
+    max-height: 400px;
+    display: block;
+}
+
+.button-group {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.button-group button {
+    flex: 1;
+    min-width: 120px;
+}
+
+/* 일기 목록 모드 */
+.diary-list {
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.diary-list-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.diary-list-header h2 {
+    font-size: 24px;
+    color: #3a3a3a;
+}
+
+.diary-list-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.diary-item {
+    background: #fafafa;
+    padding: 20px;
+    border-radius: 8px;
+    border-left: 4px solid #3a3a3a;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+}
+
+.diary-item:hover {
+    background: #f0f0f0;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.diary-item-thumbnail {
+    flex-shrink: 0;
+    width: 120px;
+    height: 120px;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.diary-item-thumbnail img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.diary-item-content-wrapper {
+    flex: 1;
+    min-width: 0;
+}
+
+.diary-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+    margin-bottom: 10px;
+}
+
+.diary-item-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #3a3a3a;
+}
+
+.diary-item-date {
+    font-size: 14px;
+    color: #666;
+}
+
+.diary-item-preview {
+    font-size: 14px;
+    color: #555;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+/* 보기 모드 */
+.diary-view {
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.diary-view-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.diary-view-meta {
+    color: #666;
+    margin-bottom: 16px;
+}
+
+.diary-view-image img {
+    max-width: 100%;
+    border-radius: 8px;
+    margin-bottom: 16px;
+}
+
+/* 북마크 모드 */
+.bookmark-list {
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.bookmark-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.bookmark-header h2 {
+    font-size: 24px;
+    color: #3a3a3a;
+}
+
+.bookmark-list-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.bookmark-item {
+    background: #fafafa;
+    padding: 20px;
+    border-radius: 8px;
+    border-left: 4px solid #3a3a3a;
+}
+
+.bookmark-item-content {
+    font-size: 16px;
+    line-height: 1.8;
+    color: #2c2c2c;
+    margin-bottom: 10px;
+}
+
+.bookmark-item-author {
+    text-align: right;
+    font-size: 14px;
+    color: #666;
+    font-style: italic;
+}
+
+.bookmark-item-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 10px;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 1024px) {
+    .main-content {
+        flex-direction: column;
+    }
+    
+    .sidebar {
+        width: 100%;
+    }
+}
+
+/* 로그인하지 않은 페이지의 명언/질문 섹션 */
+.quote-section-not-auth,
+.question-section-not-auth {
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.quote-section-not-auth h2,
+.question-section-not-auth h2 {
+    font-size: 20px;
+    margin-bottom: 20px;
+    color: #3a3a3a;
+    font-weight: 700;
+    border-bottom: 3px solid #e5e5e5;
+    padding-bottom: 10px;
+}
+
+/* 반응형 */
+@media (max-width: 1024px) {
+    .not-authed-main {
+        grid-template-columns: 1fr;
+    }
+    
+    .auth-container {
+        position: relative;
+    }
+}
+
+@media (max-width: 768px) {
+    header h1 {
+        font-size: 36px;
+    }
+    
+    .auth-container {
+        padding: 30px 20px;
+    }
+    
+    .calendar-grid {
+        gap: 4px;
+    }
+    
+    .calendar-day {
+        font-size: 11px;
+        padding: 3px;
+    }
+}
+
