@@ -50,7 +50,7 @@
   stateless를 위해 jwt를 사용하는것.  
   jwt_blacklist를 관리하고 대조 작업을 하면 세션에 비해 이점이 없다고 판단, 과감히 미구현.
 
-- ### AUTH0 ?
+- ### OAUTH ?
   docs에서 맨날 토큰 복붙 귀찮아서 바로 docs에서 아이디 비번으로 로그인이 가능하게 구현.
   username을 login_id에 대응하여 구현함.
 
@@ -86,6 +86,7 @@
 
 ### 앱 화면
 ![img1](/design/authed_page.png)
+
 
 
 
