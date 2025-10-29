@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="Black">
+<<<<<<< HEAD
+    <option name="sdkName" value="Python 3.13 virtualenv at ~/Desktop/megabox/venv" />
+  </component>
+  <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.13 virtualenv at ~/Desktop/megabox/venv" project-jdk-type="Python SDK" />
+=======
     <option name="sdkName" value="Python 3.13 (5billion_in_my_bank_account)" />
   </component>
   <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.13 (5billion_in_my_bank_account)" project-jdk-type="Python SDK" />
+>>>>>>> 745104689a989fbef6fd5b0b2c65f441b64c494c
 </project>
