@@ -1,6 +1,7 @@
 from fastapi import APIRouter, HTTPException, Depends
 from datetime import date
-from typing import List, Dict
+from typing import List, Dict, DefaultDict
+from collections import defaultdict
 from tortoise.exceptions import DoesNotExist
 
 from src.model.schema.token import (
@@ -8,7 +9,7 @@ from src.model.schema.token import (
     TokenResponse,
 )
 import config
-from src.model.schema.user import UserCreate, UserResponse
+from src.model.schema.user import UserCreate, UserResponse, CalendarEntry
 from src.model.users import User
 from src.model.posts import Post
 from fastapi.security import OAuth2PasswordRequestForm
@@ -51,7 +52,7 @@ async def refresh_tokens(request: TokenRefreshRequest):
     )
 
 @router.post("/me", response_model=UserResponse)
-async def get_current_user(user: User = Depends(get_current_user)):
+async def get_user(user: User = Depends(get_current_user)):
     return UserResponse(
         id=user.id,
         username=user.username,
@@ -72,11 +73,14 @@ async def create_user(user_create: UserCreate):
         number_of_posts=user.number_of_posts,
     )
 
-@router.get("/calender", response_model=List[Dict[str, date]])
+@router.get("/calender", response_model=List[CalendarEntry])
 async def get_calender(user: User = Depends(get_current_user)):
-    post_dates = (
+    rows = (
         await Post.filter(author=user)
-        .distinct()
-        .values_list("date", flat=True)
+        .values_list("date", "id")
     )
-    return [{"date": post_date} for post_date in post_dates]
+    bucket: DefaultDict[date, List[int]] = defaultdict(list)
+    for d, pid in rows:
+        if pid not in bucket[d]:
+            bucket[d].append(pid)
+    return [CalendarEntry(date=d, post_ids=pids) for d, pids in bucket.items()]

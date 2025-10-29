@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>dear my diary</title>
+    <link rel="stylesheet" href="/ast/css/styles.css">
+</head>
+<body>
+    <div id="app">
+        <!-- 로그인되지 않은 상태 -->
+        <div id="not-authed" class="container">
+            <header>
+                <h1>dear my diary</h1>
+                <div id="quote-banner-not-auth" class="quote-banner" onclick="refreshQuote()">
+                    <div class="quote-text" id="quote-banner-text-not-auth"></div>
+                    <div class="quote-author" id="quote-banner-author-not-auth"></div>
+                </div>
+            </header>
+            
+            <main class="not-authed-main">
+                <div class="auth-section">
+                    <div class="auth-container">
+                        <div class="auth-tabs">
+                            <button class="tab-btn active" onclick="showLogin()">로그인</button>
+                            <button class="tab-btn" onclick="showRegister()">회원가입</button>
+                        </div>
+                        
+                        <!-- 로그인 폼 -->
+                        <div id="login-form" class="auth-form active">
+                            <input type="text" id="login-id" placeholder="아이디" />
+                            <input type="password" id="login-password" placeholder="비밀번호" />
+                            <button onclick="handleLogin()" class="primary-btn">로그인</button>
+                            <div id="login-error" class="error-message"></div>
+                        </div>
+                        
+                        <!-- 회원가입 폼 -->
+                        <div id="register-form" class="auth-form">
+                            <input type="text" id="register-username" placeholder="이름" />
+                            <input type="text" id="register-login-id" placeholder="아이디" />
+                            <input type="password" id="register-password" placeholder="비밀번호" />
+                            <button onclick="handleRegister()" class="primary-btn">회원가입</button>
+                            <div id="register-error" class="error-message"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                
+            </main>
+        </div>
+        
+        <!-- 인증된 메인 페이지 -->
+        <div id="authed" class="container hidden">
+            <header class="main-header">
+                <h1>dear my diary</h1>
+                <div class="user-info">
+                    <span id="username-display"></span>
+                    <button onclick="handleLogout()" class="secondary-btn">로그아웃</button>
+                </div>
+            </header>
+            <div id="quote-banner" class="quote-banner" onclick="refreshQuote()">
+                <div class="quote-text" id="quote-banner-text"></div>
+                <div class="quote-author" id="quote-banner-author"></div>
+                <button type="button" id="bookmark-banner-btn" class="quote-bookmark-btn" onclick="event.stopPropagation(); bookmarkCurrentQuote();" title="북마크">❤</button>
+            </div>
+            
+            <main class="main-content">
+                <!-- 왼쪽 사이드바: 달력 + 명언/질문 -->
+                <aside class="sidebar">
+                    <section class="calendar-section">
+                        <div class="calendar-header">
+                            <button id="prev-month-btn" onclick="changeMonth(-1)" class="icon-btn">‹</button>
+                            <h2 id="current-month-display"></h2>
+                            <button id="next-month-btn" onclick="changeMonth(1)" class="icon-btn">›</button>
+                        </div>
+                        <div id="calendar-grid" class="calendar-grid"></div>
+                        <button onclick="showNewDiaryForm()" class="primary-btn" style="width: 100%; margin-top: 15px;">새 일기 작성</button>
+                    </section>
+                    <section class="bookmark-section">
+                        <h2>명언 북마크</h2>
+                        <div id="bookmark-sidebar-list" class="bookmark-list-container"></div>
+                        <div class="bookmark-pagination" style="display:flex;align-items:center;gap:8px;justify-content:center;margin-top:10px;">
+                            <button class="secondary-btn" onclick="changeBookmarkPage(-1)">이전</button>
+                            <span id="bm-page-info"></span>
+                            <button class="secondary-btn" onclick="changeBookmarkPage(1)">다음</button>
+                        </div>
+                    </section>
+                    
+                    
+                </aside>
+                
+                <!-- 오른쪽 메인 영역: 일기 작성/목록/보기 -->
+                <div class="diary-section">
+                    
+                    <!-- 상태 0: 일기 보기 모드 -->
+                    <section id="diary-view-mode" class="diary-view hidden">
+                        <div class="diary-view-header">
+                            <h2 id="view-title"></h2>
+                            <div class="diary-view-actions">
+                                <button onclick="enterEditFromView()" class="secondary-btn">편집</button>
+                                <button onclick="switchToMode('list')" class="secondary-btn">목록</button>
+                            </div>
+                        </div>
+                        <div class="diary-view-meta" id="view-date"></div>
+                        <div class="diary-view-image" id="view-image"></div>
+                        <div class="diary-view-content" id="view-content"></div>
+                    </section>
+                    
+                    <!-- 상태 1: 일기 작성 모드 -->
+                    <section id="diary-edit-mode" class="diary-edit">
+                        <h2>일기 작성</h2>
+                        <input type="date" id="diary-date" class="hidden" />
+                        <input type="text" id="diary-title" placeholder="제목" />
+                        <textarea id="diary-content" placeholder="오늘은 어떤 하루였나요?"></textarea>
+                        <div class="image-upload-section">
+                            <input type="file" id="diary-image" accept="image/*" />
+                            <div id="image-preview"></div>
+                        </div>
+                        <div class="button-group">
+                            <button onclick="saveDiary()" class="primary-btn">저장</button>
+                            <button onclick="cancelDiary()" class="secondary-btn">취소</button>
+                            <button id="delete-btn" onclick="deleteDiary()" class="danger-btn hidden">삭제</button>
+                        </div>
+                    </section>
+                    
+                    <!-- 상태 2: 일기 목록 모드 -->
+                    <section id="diary-list-mode" class="diary-list hidden">
+                        <div class="diary-list-header">
+                            <h2>한 주 요약</h2>
+                        </div>
+                        <div id="diary-list-container" class="diary-list-container"></div>
+                    </section>
+                    
+                    <!-- 상태 3: 북마크 보기 모드 -->
+                    <section id="bookmark-mode" class="bookmark-list hidden">
+                        <div class="bookmark-header">
+                            <h2>북마크한 명언</h2>
+                            <button onclick="closeBookmarks()" class="secondary-btn">닫기</button>
+                        </div>
+                        <div id="bookmark-list-container" class="bookmark-list-container"></div>
+                    </section>
+                </div>
+            </main>
+        </div>
+    </div>
+    
+    <script src="/ast/js/app.js"></script>
+</body>
+</html>
+
