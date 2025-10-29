@@ -47,10 +47,10 @@
   해당 post의 author가 현재 접속한 유저라면 이미지를 가져옴.
 
 - ### 정적 라우팅
-  prefix가 없다면 기본적으로 html폴더의 경로를 통해 반환. 경로를 적지 않을시 index.html을 전송.
-  404 에러페이지같은 상대경로가 아닌 서버가 직접 반환해야하는 response가 필요하다면 페이지를 필요로 한다면 static/response를 통해 반환.
-  /ast/ 라우팅으로 static/asset 안의 폴더를 탐색하여 반환.
-  기능은 구현하였지만 api 위주의 단일페이지로 구성하게 되어 적짐
+  prefix가 없다면 기본적으로 html폴더의 경로를 통해 반환. 경로를 적지 않을시 index.html을 전송.  
+  404 에러페이지같은 상대경로가 아닌 서버가 직접 반환해야하는 response가 필요하다면 페이지를 필요로 한다면 static/response를 통해 반환.  
+  /ast/ 라우팅으로 static/asset 안의 폴더를 탐색하여 반환.  
+  기능은 구현하였지만 api 위주의 단일페이지로 구성하게 되었음.  
 
 ### 로그인 화면
 ![img2](/design/not_authed_page.png)
@@ -59,5 +59,6 @@
 ![img1](/design/authed_page.png)
 
 실제 구현
+
 
 
