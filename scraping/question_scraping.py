@@ -41,7 +41,7 @@ print("\n스크래핑된 질문 목록:")
 print(data_to_save)
 
 
-conn = sqlite3.connect('db.sqlite3')
+conn = sqlite3.connect('/home/ec2-user/5billion_in_my_bank_account/db.sqlite3')
 cursor = conn.cursor()
  
 for question in data_to_save:
